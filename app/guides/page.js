@@ -35,7 +35,7 @@ export default function GuidesPage() {
             <label>언어</label>
             <select value={f.language} onChange={(e) => setF({ ...f, language: e.target.value })}>
               <option value="">전체</option>
-              <option>영어</option><option>일본어</option><option>중국어</option><option>프랑스어</option>
+              <option>영어</option><option>일본어</option><option>중국어</option><option>베트남어</option><option>이탈리아어</option><option>프랑스어</option>
             </select>
           </div>
           <div>

@@ -57,7 +57,7 @@ export default function LanguagePage() {
             <div>
               <label>언어</label>
               <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
-                <option>한국어</option><option>영어</option><option>일본어</option><option>중국어</option><option>프랑스어</option>
+                <option>한국어</option><option>영어</option><option>일본어</option><option>중국어</option><option>베트남어</option><option>이탈리아어</option><option>프랑스어</option>
               </select>
             </div>
             <div>

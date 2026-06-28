@@ -52,7 +52,7 @@ export default function QuickHelpPage() {
           <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="예: 홍대입구역 9번 출구" />
           <label>선호 언어</label>
           <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
-            <option>영어</option><option>일본어</option><option>중국어</option><option>한국어</option>
+            <option>영어</option><option>일본어</option><option>중국어</option><option>베트남어</option><option>이탈리아어</option><option>한국어</option>
           </select>
           <label>도움 내용 *</label>
           <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="예: 공항철도 타는 곳을 못 찾겠어요!" />
