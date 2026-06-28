@@ -8,15 +8,16 @@
 
 ---
 
-## ① 무료 Postgres DB 만들기 (Neon)
+> **순서 주의:** 이 계정의 Neon은 *Vercel 통합으로 관리*되므로, DB는 Neon 콘솔이 아니라 **Vercel에서** 만듭니다. 그래서 먼저 ②③(GitHub 푸시 → Vercel 임포트)을 하고, 그다음 ①(Vercel Storage에서 Neon 생성)을 진행하세요.
 
-Vercel은 서버리스라 SQLite 파일을 못 써요. 무료 클라우드 DB를 하나 만듭니다.
+## ① Vercel에서 무료 Postgres(Neon) 만들기
 
-1. https://neon.tech 접속 → **Sign up** (GitHub 계정으로 가입하면 편함)
-2. **Create project** → 이름 아무거나(예: `jalr`), 리전은 **AWS / Singapore** 또는 가까운 곳 선택
-3. 생성되면 **Connection string** 화면이 나옵니다. **"Pooled connection"** 토글을 켜고, 문자열을 복사
-   - 형태: `postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require`
-4. 이 문자열을 잘 보관하세요. 아래에서 두 번 씁니다.
+Vercel은 서버리스라 SQLite 파일을 못 써요. Vercel 통합으로 Neon DB를 만들면 `DATABASE_URL`이 **자동으로** 프로젝트에 연결됩니다.
+
+1. (③에서 gotta-go를 Vercel에 임포트한 뒤) Vercel 프로젝트 → **Storage** 탭 → **Create Database**
+2. **Neon (Postgres)** 선택 → 이름 짓고(예: `gotta-go-db`) **Create**
+   - Vercel이 새 Neon 프로젝트를 자동 생성하고, `DATABASE_URL` 환경변수를 프로젝트에 자동 추가해줍니다. (기존 `neon-lightBlue-garden`과 분리됨)
+3. 이 `DATABASE_URL` 값을 **Storage 탭** 또는 **Settings → Environment Variables**에서 복사해두세요. 다음 단계에서 로컬에 씁니다.
 
 ### 로컬에서 DB 초기화 (한 번만)
 
@@ -25,16 +26,18 @@ Vercel은 서버리스라 SQLite 파일을 못 써요. 무료 클라우드 DB를
 ```bash
 cd ~/Downloads/jalr
 
-# .env 파일을 열어 DATABASE_URL 을 위에서 복사한 Neon 문자열로 바꾸기
+# .env 파일을 열어 DATABASE_URL 을 위에서 복사한 값으로 바꾸기
 #   (.env 파일이 안 보이면: 텍스트 편집기로 ~/Downloads/jalr/.env 열기)
 
 npm install
 npx prisma db push      # Neon에 테이블 생성
 npm run db:seed         # 샘플 가이드 데이터 넣기
-npm run dev             # http://localhost:3000 에서 확인
+npm run dev             # http://localhost:3000 에서 로컬 확인
 ```
 
-여기까지 로컬에서 잘 뜨면 절반은 끝났어요.
+테이블·데이터를 만든 뒤 Vercel에서 **Redeploy** 하면 실제 사이트에도 반영돼요.
+
+> 기존 `neon-lightBlue-garden`을 재사용하려면, 그 프로젝트에서 새 **Branch/Database**를 추가하고 그 연결 문자열을 Vercel 환경변수 `DATABASE_URL`에 직접 넣어도 됩니다. 다만 위 Vercel Storage 방식이 자동 연결돼서 제일 간단해요.
 
 ---
 
