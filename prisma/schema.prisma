@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 사용자 (가이드/관광객 공용) — 누구나 가이드가 될 수 있음
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  // 역할: traveler / guide / both
+  role      String   @default("traveler")
+  createdAt DateTime @default(now())
+
+  guide     Guide?
+  trips     Trip[]
+  langOffers LanguageOffer[]
+}
+
+// 가이드 프로필 — 전문 가이드가 아니어도 동네를 아는 일반 한국인이면 등록 가능
+model Guide {
+  id           Int     @id @default(autoincrement())
+  userId       Int     @unique
+  user         User    @relation(fields: [userId], references: [id])
+  // 활동 동네 (콤마 구분): 예) "홍대,연남동,합정"
+  neighborhoods String
+  // 가능 언어 (콤마 구분): 예) "영어,일본어"
+  languages    String
+  bio          String  @default("")
+  // 관심/특기 태그 (콤마 구분): 예) "맛집,야경,카페,쇼핑"
+  interests    String  @default("")
+  // free(무료/품앗이) / paid(유료)
+  priceType    String  @default("free")
+  // 일반인 여부 (전문 가이드가 아닌 동네 주민)
+  isLocal      Boolean @default(true)
+  rating       Float   @default(0)
+  createdAt    DateTime @default(now())
+
+  matches      TripMatch[]
+  quickHelps   QuickHelpRequest[]
+}
+
+// 여행 경로 — 하나의 path에 여러 정거장(동네)
+model Trip {
+  id          Int      @id @default(autoincrement())
+  travelerId  Int
+  traveler    User     @relation(fields: [travelerId], references: [id])
+  title       String
+  date        String   @default("")
+  // 경로 정거장(콤마 구분): 예) "경복궁,북촌,인사동,명동"
+  stops       String
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+
+  matches     TripMatch[]
+}
+
+// 여행 path 위의 멀티 가이드 매칭 — 정거장(구간)별로 다른 가이드 배정 가능
+model TripMatch {
+  id        Int      @id @default(autoincrement())
+  tripId    Int
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  guideId   Int
+  guide     Guide    @relation(fields: [guideId], references: [id])
+  // 이 가이드가 맡는 구간(정거장 이름). 비우면 전체 동행
+  stop      String   @default("")
+  // requested / accepted / declined
+  status    String   @default("requested")
+  createdAt DateTime @default(now())
+}
+
+// 빠른 길찾기 / 잠깐 도움 요청 (즉석 매칭)
+model QuickHelpRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  // 현재 위치/근처
+  location  String
+  language  String   @default("영어")
+  message   String
+  // open / claimed / done
+  status    String   @default("open")
+  guideId   Int?
+  guide     Guide?   @relation(fields: [guideId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+// 어학 연결 — 학습 수요/공급 (예: 외국인이 한국어 배우고 싶음 <-> 한국인이 영어 배우고 싶음)
+model LanguageOffer {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  // teach(가르쳐줄 수 있음) / learn(배우고 싶음)
+  kind      String
+  language  String
+  level     String   @default("초급")
+  note      String   @default("")
+  createdAt DateTime @default(now())
+}
