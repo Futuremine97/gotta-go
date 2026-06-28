@@ -32,11 +32,19 @@ export async function GET(request) {
 // POST /api/guides — 누구나 가이드 등록 (User 자동 생성/연결)
 export async function POST(request) {
   const body = await request.json();
-  const { name, email, neighborhoods, languages, bio, interests, priceType, isLocal } = body;
+  const { name, email, neighborhoods, languages, bio, interests, priceType, isLocal, certNo } = body;
 
   if (!name || !email || !neighborhoods || !languages) {
     return NextResponse.json(
       { error: "이름, 이메일, 활동 동네, 가능 언어는 필수예요." },
+      { status: 400 }
+    );
+  }
+
+  // 관광진흥법 제38조: 외국인 관광객 대상 유료 관광안내는 관광통역안내사 자격 필요.
+  if (priceType === "paid" && !(certNo && certNo.trim())) {
+    return NextResponse.json(
+      { error: "유료 안내는 관광통역안내사 자격번호가 필요해요. (관광진흥법 제38조) 자격이 없다면 '무료/품앗이'로 등록해주세요." },
       { status: 400 }
     );
   }
@@ -51,7 +59,7 @@ export async function POST(request) {
   if (existing) {
     const updated = await prisma.guide.update({
       where: { userId: user.id },
-      data: { neighborhoods, languages, bio: bio || "", interests: interests || "", priceType: priceType || "free", isLocal: isLocal !== false },
+      data: { neighborhoods, languages, bio: bio || "", interests: interests || "", priceType: priceType || "free", certNo: certNo || "", isLocal: isLocal !== false },
       include: { user: true },
     });
     return NextResponse.json(updated);
@@ -65,6 +73,7 @@ export async function POST(request) {
       bio: bio || "",
       interests: interests || "",
       priceType: priceType || "free",
+      certNo: certNo || "",
       isLocal: isLocal !== false,
       rating: 5.0,
     },

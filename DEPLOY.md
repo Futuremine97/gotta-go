@@ -61,21 +61,19 @@ git push -u origin main
 > `git remote add` 에서 "already exists" 에러가 나면:
 > `git remote set-url origin https://github.com/Futuremine97/gotta-go.git` 후 다시 push.
 
-> `.env`는 `.gitignore`에 들어있어 **업로드되지 않아요**(비밀번호 보호). DB 연결값은 ③에서 Vercel에 따로 넣습니다.
+> `.env`는 `.gitignore`에 들어있어 **업로드되지 않아요**(비밀번호 보호). DB 연결값(`DATABASE_URL`)은 ①의 Vercel Storage에서 자동으로 연결됩니다.
 
 ---
 
 ## ③ Vercel에 배포
 
 1. https://vercel.com 접속 → **Sign up** → GitHub로 로그인
-2. **Add New… → Project** → `gotta-go` 저장소 **Import**
-3. 배포 설정 화면에서 **Environment Variables** 펼치기:
-   - Name: `DATABASE_URL`
-   - Value: ①에서 복사한 Neon **Pooled** 연결 문자열 붙여넣기
-   - **Add** 클릭
-4. **Deploy** 클릭 → 1~2분 기다리면 `xxxx.vercel.app` 주소로 사이트가 떠요.
+2. **Add New… → Project** → `gotta-go` 저장소 **Import** → **Deploy**
+   - 이 시점엔 DB가 아직 없어도 빌드는 성공해요(`prisma generate`만 실행). 데이터 조회 화면만 비어 보입니다.
+3. 배포되면 **①번(Storage 탭에서 Neon 생성)** 으로 가서 DB를 연결하세요. `DATABASE_URL`이 자동으로 추가됩니다.
+4. ①의 로컬 `prisma db push` + `db:seed`로 테이블·데이터를 만든 뒤, Vercel 프로젝트에서 **Deployments → 최신 배포 → Redeploy** 하면 실제 사이트에 데이터가 보여요.
 
-> 빌드 시 자동으로 `prisma generate`가 실행됩니다(설정해둠). 테이블은 ①에서 이미 만들었으니 그대로 동작해요.
+> 빌드 시 자동으로 `prisma generate`가 실행됩니다(설정해둠).
 
 ---
 

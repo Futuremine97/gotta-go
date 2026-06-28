@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Disclaimer from "../components/Disclaimer";
 
 const INTEREST_TAGS = ["맛집", "카페", "야경", "역사", "쇼핑", "전통", "사진", "한옥", "팝업", "나이트라이프", "길찾기", "뷰티"];
 
 export default function BecomeGuidePage() {
   const [form, setForm] = useState({
     name: "", email: "", neighborhoods: "", languages: "영어",
-    bio: "", priceType: "free", isLocal: true,
+    bio: "", priceType: "free", isLocal: true, certNo: "",
   });
   const [tags, setTags] = useState([]);
   const [msg, setMsg] = useState(null);
@@ -41,6 +42,8 @@ export default function BecomeGuidePage() {
     <main className="container" style={{ maxWidth: 720 }}>
       <h1 className="section-title" style={{ marginTop: 0 }}>나도 동네 가이드 되기</h1>
       <p className="section-sub">전문 가이드가 아니어도 괜찮아요. 우리 동네를 아는 마음이면 충분합니다.</p>
+
+      <Disclaimer />
 
       <form className="card" onSubmit={submit}>
         {msg && <div className="notice">{msg}</div>}
@@ -78,7 +81,7 @@ export default function BecomeGuidePage() {
             <label>비용</label>
             <select value={form.priceType} onChange={(e) => setForm({ ...form, priceType: e.target.value })}>
               <option value="free">무료 / 품앗이</option>
-              <option value="paid">유료</option>
+              <option value="paid">유료 (자격 필요)</option>
             </select>
           </div>
           <div>
@@ -89,6 +92,18 @@ export default function BecomeGuidePage() {
             </select>
           </div>
         </div>
+
+        {form.priceType === "paid" && (
+          <>
+            <label>관광통역안내사 자격번호 *</label>
+            <input value={form.certNo} onChange={(e) => setForm({ ...form, certNo: e.target.value })}
+              placeholder="예: GIT-2023-000000" />
+            <p className="muted small" style={{ marginTop: 6 }}>
+              ⚖️ 한국 관광진흥법 제38조에 따라 외국인 관광객 대상 <b>유료 안내</b>는 관광통역안내사 자격이 필요해요.
+              자격이 없다면 <b>무료/품앗이</b>로 등록하고 친구·문화교류·언어교환·길 도움으로 함께해주세요.
+            </p>
+          </>
+        )}
 
         <button className="btn btn-dark btn-block" style={{ marginTop: 20 }} disabled={busy}>
           {busy ? "등록 중…" : "가이드로 등록하기"}

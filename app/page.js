@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Disclaimer from "./components/Disclaimer";
 
 export default function Home() {
   return (
@@ -45,6 +46,8 @@ export default function Home() {
         <div className="step"><div className="num">3</div><div><strong>만나서 진짜 한국을 경험</strong><div className="muted small">필요하면 빠른 도움·어학 교환까지. 동네 친구와 함께라면 길 잃을 일이 없어요.</div></div></div>
         <Link href="/trip" className="btn btn-dark btn-block" style={{ marginTop: 8 }}>여행 경로 매칭 시작하기 →</Link>
       </div>
+
+      <Disclaimer />
     </main>
   );
 }

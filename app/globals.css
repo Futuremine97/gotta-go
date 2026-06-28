@@ -124,4 +124,13 @@ textarea { min-height: 90px; resize: vertical; }
 .path .stop { background: var(--ink); color: #fff; padding: 6px 12px; border-radius: 999px; font-weight: 600; font-size: 13px; }
 .path .arrow { color: var(--muted); }
 
+.disclaimer {
+  margin: 24px 0; padding: 16px 18px; border-radius: 14px;
+  background: #fff8ec; border: 1px solid #f3e2bf; color: #7a5a16;
+}
+.disclaimer strong { display: block; margin-bottom: 6px; font-size: 14px; }
+.disclaimer p { margin: 0; font-size: 13px; line-height: 1.7; }
+.disclaimer a { color: #7a5a16; }
+
 footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; }
+footer a { text-decoration: underline; }

@@ -23,6 +23,8 @@ export default function RootLayout({ children }) {
         {children}
         <footer>
           잘러(JALR) — 한국에 온 친구에게 진짜 동네를 알려주는 가장 따뜻한 방법 · MVP 데모
+          <br />
+          <Link href="/privacy">개인정보처리방침</Link> · 외국인 관광객 대상 유료 안내는 관광통역안내사 자격 보유자만 가능합니다 (관광진흥법 제38조)
         </footer>
       </body>
     </html>

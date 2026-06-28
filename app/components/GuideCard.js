@@ -16,6 +16,9 @@ export default function GuideCard({ guide, action }) {
           <div className="small muted">
             {guide.isLocal ? "🏡 동네 주민" : "🎓 전문/학생 가이드"} ·{" "}
             {guide.priceType === "free" ? "무료/품앗이" : "유료"}
+            {guide.priceType === "paid" && guide.certNo ? (
+              <span className="chip green" style={{ marginLeft: 6 }}>✅ 관광통역안내사 인증</span>
+            ) : null}
           </div>
         </div>
         <div className="rating">★ {Number(guide.rating).toFixed(1)}</div>

@@ -35,6 +35,8 @@ model Guide {
   interests    String  @default("")
   // free(무료/품앗이) / paid(유료)
   priceType    String  @default("free")
+  // 관광통역안내사 자격번호 (유료 안내 시 필수). 관광진흥법 제38조 준수용.
+  certNo       String  @default("")
   // 일반인 여부 (전문 가이드가 아닌 동네 주민)
   isLocal      Boolean @default(true)
   rating       Float   @default(0)
