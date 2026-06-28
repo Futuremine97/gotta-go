@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LangOptions from "../components/LangOptions";
+import { useLang } from "../i18n/LanguageContext";
 
 export default function QuickHelpPage() {
+  const { t } = useLang();
   const [list, setList] = useState([]);
   const [form, setForm] = useState({ name: "", location: "", language: "영어", message: "" });
   const [msg, setMsg] = useState(null);
@@ -23,11 +26,11 @@ export default function QuickHelpPage() {
     });
     setBusy(false);
     if (res.ok) {
-      setMsg("도움 요청이 등록됐어요! 근처 한국인에게 알림이 갑니다.");
+      setMsg(t("q.ok"));
       setForm({ name: "", location: "", language: "영어", message: "" });
       load();
     } else {
-      const d = await res.json(); setErr(d.error || "등록 실패");
+      const d = await res.json(); setErr(d.error || t("err.generic"));
     }
   }
 
@@ -36,44 +39,46 @@ export default function QuickHelpPage() {
     load();
   }
 
+  const openCount = list.filter((r) => r.status === "open").length;
+
   return (
     <main className="container" style={{ maxWidth: 880 }}>
-      <h1 className="section-title" style={{ marginTop: 0 }}>⚡ 잠깐만 도와주세요</h1>
-      <p className="section-sub">길을 잃었거나 메뉴를 못 읽을 때, 근처 한국인에게 5분짜리 도움을 요청하세요.</p>
+      <h1 className="section-title" style={{ marginTop: 0 }}>{t("q.title")}</h1>
+      <p className="section-sub">{t("q.sub")}</p>
 
       <div className="grid grid-2">
         <form className="card" onSubmit={submit}>
-          <h3 style={{ marginTop: 0 }}>도움 요청하기</h3>
+          <h3 style={{ marginTop: 0 }}>{t("q.formTitle")}</h3>
           {msg && <div className="notice">{msg}</div>}
           {err && <div className="notice err">{err}</div>}
-          <label>이름 *</label>
+          <label>{t("c.name")} *</label>
           <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
-          <label>현재 위치 *</label>
-          <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="예: 홍대입구역 9번 출구" />
-          <label>선호 언어</label>
+          <label>{t("q.location")} *</label>
+          <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder={t("q.locationPh")} />
+          <label>{t("q.prefLang")}</label>
           <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
-            <option>영어</option><option>일본어</option><option>중국어</option><option>베트남어</option><option>이탈리아어</option><option>한국어</option>
+            <LangOptions only={["영어", "일본어", "중국어", "베트남어", "이탈리아어", "한국어"]} />
           </select>
-          <label>도움 내용 *</label>
-          <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="예: 공항철도 타는 곳을 못 찾겠어요!" />
-          <button className="btn btn-dark btn-block" style={{ marginTop: 16 }} disabled={busy}>{busy ? "전송 중…" : "근처에 도움 요청"}</button>
+          <label>{t("q.message")} *</label>
+          <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t("q.messagePh")} />
+          <button className="btn btn-dark btn-block" style={{ marginTop: 16 }} disabled={busy}>{busy ? t("q.sending") : t("q.submit")}</button>
         </form>
 
         <div>
-          <h3 style={{ marginTop: 0 }}>주변 도움 요청 ({list.filter((r) => r.status === "open").length} 건 대기중)</h3>
-          {list.length === 0 && <p className="muted">아직 요청이 없어요.</p>}
+          <h3 style={{ marginTop: 0 }}>{t("q.listTitle")} ({openCount} {t("q.waiting")})</h3>
+          {list.length === 0 && <p className="muted">{t("q.none")}</p>}
           {list.map((r) => (
             <div className="card" key={r.id} style={{ marginBottom: 12, padding: 16 }}>
               <div className="toolbar" style={{ justifyContent: "space-between" }}>
                 <strong>{r.name}</strong>
                 <span className={"chip " + (r.status === "open" ? "brand" : "green")}>
-                  {r.status === "open" ? "대기중" : "도움 연결됨"}
+                  {r.status === "open" ? t("q.statusOpen") : t("q.statusClaimed")}
                 </span>
               </div>
               <div className="small muted" style={{ margin: "4px 0" }}>📍 {r.location} · 🗣 {r.language}</div>
               <p style={{ margin: "6px 0" }}>{r.message}</p>
               {r.status === "open" && (
-                <button className="btn btn-dark" onClick={() => claim(r.id)}>내가 도와줄게요</button>
+                <button className="btn btn-dark" onClick={() => claim(r.id)}>{t("q.claim")}</button>
               )}
             </div>
           ))}

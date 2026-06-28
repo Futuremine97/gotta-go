@@ -1,6 +1,9 @@
 "use client";
 
+import { useLang } from "../i18n/LanguageContext";
+
 export default function GuideCard({ guide, action }) {
+  const { t } = useLang();
   const name = guide.user?.name || "가이드";
   const initial = name.slice(0, 1);
   const neighborhoods = (guide.neighborhoods || "").split(",").filter(Boolean);
@@ -14,10 +17,10 @@ export default function GuideCard({ guide, action }) {
         <div>
           <h3 style={{ margin: 0 }}>{name}</h3>
           <div className="small muted">
-            {guide.isLocal ? "🏡 동네 주민" : "🎓 전문/학생 가이드"} ·{" "}
-            {guide.priceType === "free" ? "무료/품앗이" : "유료"}
+            {guide.isLocal ? t("card.local") : t("card.pro")} ·{" "}
+            {guide.priceType === "free" ? t("c.free") : t("c.paid")}
             {guide.priceType === "paid" && guide.certNo ? (
-              <span className="chip green" style={{ marginLeft: 6 }}>✅ 관광통역안내사 인증</span>
+              <span className="chip green" style={{ marginLeft: 6 }}>{t("card.certified")}</span>
             ) : null}
           </div>
         </div>

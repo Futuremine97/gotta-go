@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Disclaimer from "../components/Disclaimer";
+import { useLang } from "../i18n/LanguageContext";
 
 const INTEREST_TAGS = ["맛집", "카페", "야경", "역사", "쇼핑", "전통", "사진", "한옥", "팝업", "나이트라이프", "길찾기", "뷰티"];
 
 export default function BecomeGuidePage() {
+  const { t } = useLang();
   const [form, setForm] = useState({
     name: "", email: "", neighborhoods: "", languages: "영어",
     bio: "", priceType: "free", isLocal: true, certNo: "",
@@ -15,8 +17,8 @@ export default function BecomeGuidePage() {
   const [err, setErr] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  function toggleTag(t) {
-    setTags((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]));
+  function toggleTag(tag) {
+    setTags((cur) => (cur.includes(tag) ? cur.filter((x) => x !== tag) : [...cur, tag]));
   }
 
   async function submit(e) {
@@ -29,19 +31,19 @@ export default function BecomeGuidePage() {
     });
     setBusy(false);
     if (res.ok) {
-      setMsg("가이드 등록 완료! 이제 여행자들이 회원님을 찾을 수 있어요.");
-      setForm({ name: "", email: "", neighborhoods: "", languages: "영어", bio: "", priceType: "free", isLocal: true });
+      setMsg(t("bg.ok"));
+      setForm({ name: "", email: "", neighborhoods: "", languages: "영어", bio: "", priceType: "free", isLocal: true, certNo: "" });
       setTags([]);
     } else {
       const d = await res.json();
-      setErr(d.error || "등록에 실패했어요.");
+      setErr(d.error || t("err.generic"));
     }
   }
 
   return (
     <main className="container" style={{ maxWidth: 720 }}>
-      <h1 className="section-title" style={{ marginTop: 0 }}>나도 동네 가이드 되기</h1>
-      <p className="section-sub">전문 가이드가 아니어도 괜찮아요. 우리 동네를 아는 마음이면 충분합니다.</p>
+      <h1 className="section-title" style={{ marginTop: 0 }}>{t("bg.title")}</h1>
+      <p className="section-sub">{t("bg.sub")}</p>
 
       <Disclaimer />
 
@@ -51,62 +53,59 @@ export default function BecomeGuidePage() {
 
         <div className="grid grid-2">
           <div>
-            <label>이름 *</label>
-            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="홍길동" />
+            <label>{t("c.name")} *</label>
+            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Hong Gildong" />
           </div>
           <div>
-            <label>이메일 *</label>
+            <label>{t("c.email")} *</label>
             <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="me@email.com" />
           </div>
         </div>
 
-        <label>활동 동네 * <span className="muted small">(콤마로 구분)</span></label>
-        <input value={form.neighborhoods} onChange={(e) => setForm({ ...form, neighborhoods: e.target.value })} placeholder="예: 홍대, 연남동, 합정" />
+        <label>{t("bg.nbh")} * <span className="muted small">{t("bg.comma")}</span></label>
+        <input value={form.neighborhoods} onChange={(e) => setForm({ ...form, neighborhoods: e.target.value })} placeholder={t("bg.nbhPh")} />
 
-        <label>가능 언어 * <span className="muted small">(콤마로 구분)</span></label>
-        <input value={form.languages} onChange={(e) => setForm({ ...form, languages: e.target.value })} placeholder="예: 영어, 일본어" />
+        <label>{t("bg.langs")} * <span className="muted small">{t("bg.comma")}</span></label>
+        <input value={form.languages} onChange={(e) => setForm({ ...form, languages: e.target.value })} placeholder={t("bg.langsPh")} />
 
-        <label>관심사 / 잘 아는 분야</label>
+        <label>{t("bg.interests")}</label>
         <div className="tag-row">
-          {INTEREST_TAGS.map((t) => (
-            <button type="button" key={t} className={"tag-btn" + (tags.includes(t) ? " on" : "")} onClick={() => toggleTag(t)}>#{t}</button>
+          {INTEREST_TAGS.map((tag) => (
+            <button type="button" key={tag} className={"tag-btn" + (tags.includes(tag) ? " on" : "")} onClick={() => toggleTag(tag)}>#{tag}</button>
           ))}
         </div>
 
-        <label>소개 한마디</label>
-        <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="우리 동네에서 보여주고 싶은 것, 자신 있는 코스를 적어주세요." />
+        <label>{t("bg.bio")}</label>
+        <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder={t("bg.bioPh")} />
 
         <div className="grid grid-2">
           <div>
-            <label>비용</label>
+            <label>{t("g.cost")}</label>
             <select value={form.priceType} onChange={(e) => setForm({ ...form, priceType: e.target.value })}>
-              <option value="free">무료 / 품앗이</option>
-              <option value="paid">유료 (자격 필요)</option>
+              <option value="free">{t("c.free")}</option>
+              <option value="paid">{t("bg.paidLabel")}</option>
             </select>
           </div>
           <div>
-            <label>유형</label>
+            <label>{t("bg.type")}</label>
             <select value={form.isLocal ? "local" : "pro"} onChange={(e) => setForm({ ...form, isLocal: e.target.value === "local" })}>
-              <option value="local">🏡 동네 주민 (일반인)</option>
-              <option value="pro">🎓 전문/학생 가이드</option>
+              <option value="local">{t("card.local")}</option>
+              <option value="pro">{t("card.pro")}</option>
             </select>
           </div>
         </div>
 
         {form.priceType === "paid" && (
           <>
-            <label>관광통역안내사 자격번호 *</label>
+            <label>{t("bg.certLabel")} *</label>
             <input value={form.certNo} onChange={(e) => setForm({ ...form, certNo: e.target.value })}
-              placeholder="예: GIT-2023-000000" />
-            <p className="muted small" style={{ marginTop: 6 }}>
-              ⚖️ 한국 관광진흥법 제38조에 따라 외국인 관광객 대상 <b>유료 안내</b>는 관광통역안내사 자격이 필요해요.
-              자격이 없다면 <b>무료/품앗이</b>로 등록하고 친구·문화교류·언어교환·길 도움으로 함께해주세요.
-            </p>
+              placeholder="GIT-2023-000000" />
+            <p className="muted small" style={{ marginTop: 6 }}>{t("bg.certNote")}</p>
           </>
         )}
 
         <button className="btn btn-dark btn-block" style={{ marginTop: 20 }} disabled={busy}>
-          {busy ? "등록 중…" : "가이드로 등록하기"}
+          {busy ? t("bg.submitting") : t("bg.submit")}
         </button>
       </form>
     </main>
