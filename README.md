@@ -1,3 +1,7 @@
+# website
+
+gottago.info 
+
 # 잘러 (JALR)
 
 > **J**oin **A** **L**ocal in Ko**R**ea — 한국에 온 외국인 관광객·유학생을 *동네를 잘 아는 한국인* 과 연결해주는 웹 서비스.
