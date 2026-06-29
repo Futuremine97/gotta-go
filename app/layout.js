@@ -8,6 +8,13 @@ export const metadata = {
   description: "외국인 관광객·유학생을 동네를 잘 아는 한국인과 연결해주는 서비스. Connect with locals who know the real Korea.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#ff6b4a",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">

@@ -105,7 +105,7 @@ a { color: inherit; text-decoration: none; }
 label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
 input, textarea, select {
   width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px;
-  font-size: 15px; font-family: inherit; background: #fbfbfe;
+  font-size: 16px; /* 16px: iOS 포커스 시 자동 확대 방지 */ font-family: inherit; background: #fbfbfe;
 }
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-2); border-color: var(--brand); }
 textarea { min-height: 90px; resize: vertical; }
@@ -140,3 +140,73 @@ textarea { min-height: 90px; resize: vertical; }
 
 footer { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; }
 footer a { text-decoration: underline; }
+
+/* ===================== 모바일 최적화 ===================== */
+@media (max-width: 768px) {
+  .nav {
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    gap: 8px 10px;
+  }
+  .nav .logo { font-size: 18px; }
+  .lang-switcher {
+    margin-left: auto;
+    padding: 7px 9px;
+    font-size: 13px;
+    max-width: 46vw;
+  }
+  /* 메뉴는 두 번째 줄에서 가로 스크롤 */
+  .nav .links {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 4px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .nav .links::-webkit-scrollbar { display: none; }
+  .nav .links a {
+    white-space: nowrap;
+    flex: 0 0 auto;
+    font-size: 13px;
+    padding: 7px 11px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container { padding: 16px 14px 56px; }
+
+  .hero { padding: 30px 20px; border-radius: 18px; }
+  .hero h1 { font-size: 27px; }
+  .hero p { font-size: 15px; margin-bottom: 20px; }
+  .hero .cta { flex-direction: column; }
+  .hero .cta .btn { width: 100%; justify-content: center; }
+
+  .section-title { font-size: 21px; margin: 30px 0 4px; }
+  .section-sub { font-size: 14px; }
+
+  .card { padding: 16px; }
+  .card h3 { font-size: 16.5px; }
+
+  /* 필터: 세로 스택 + 검색 버튼 풀폭 */
+  .filters { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filters > div { width: 100%; min-width: 0; }
+  .filters .btn { width: 100%; justify-content: center; }
+
+  /* 매칭 카드: 버튼이 줄바꿈되어 넘치지 않도록 */
+  .match-guide { flex-wrap: wrap; }
+  .match-guide .btn,
+  .match-guide .chip { margin-left: auto; }
+  .match-guide > div:nth-child(2) { flex: 1 1 60%; min-width: 0; }
+
+  /* 단계 안내 */
+  .step .num { flex-basis: 30px; height: 30px; }
+
+  /* 토큰/태그 버튼 터치 영역 */
+  .tag-btn { padding: 8px 12px; }
+
+  .avatar { width: 42px; height: 42px; flex-basis: 42px; font-size: 16px; }
+}
